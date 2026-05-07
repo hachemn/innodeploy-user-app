@@ -1,4 +1,7 @@
 {
   "name": "innodeploy-user-app",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "dependencies": {
+    "prom-client": "^15.1.3"
+  }
 }

@@ -1,8 +1,30 @@
 const http = require("http");
+const client = require("prom-client");
 
-http.createServer((req, res) => {
+const register = new client.Registry();
+
+client.collectDefaultMetrics({ register });
+
+const httpRequestsTotal = new client.Counter({
+  name: "http_requests_total",
+  help: "Total number of HTTP requests",
+});
+
+register.registerMetric(httpRequestsTotal);
+
+const server = http.createServer(async (req, res) => {
+
+  if (req.url === "/metrics") {
+    res.setHeader("Content-Type", register.contentType);
+    res.end(await register.metrics());
+    return;
+  }
+
+  httpRequestsTotal.inc();
+
   res.end("Innodeploy Version v1.0.7");
-}).listen(3000);
-// v1.0.5
-// trigger build
-// another change
+});
+
+server.listen(3000, () => {
+  console.log("Server running on port 3000");
+});
