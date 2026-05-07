@@ -1,5 +1,5 @@
 const http = require("http");
 
 http.createServer((req, res) => {
-  res.end("Hello from InnoDeploy 🚀");
+  res.end("Innodeploy Version v1.0.6");
 }).listen(3000);
