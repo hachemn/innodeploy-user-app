@@ -19,10 +19,12 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
+      - name: Build Docker images
         run: |
-          docker build -t nourhenhachem/innodeploy-app:latest .
+          docker build -t nourhenhachem/innodeploy-app:latest \
+                       -t nourhenhachem/innodeploy-app:v1.0.${{ github.run_number }} .
 
-      - name: Push Docker image
+      - name: Push Docker images
         run: |
           docker push nourhenhachem/innodeploy-app:latest
+          docker push nourhenhachem/innodeploy-app:v1.0.${{ github.run_number }}
