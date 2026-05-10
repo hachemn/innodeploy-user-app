@@ -22,7 +22,7 @@ const server = http.createServer(async (req, res) => {
 
   httpRequestsTotal.inc();
 
-  res.end("Innodeploy Version v1.0.8");
+  res.end("Innodeploy Version v1.0.9");
 });
 
 server.listen(3000, () => {
