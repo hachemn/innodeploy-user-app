@@ -36,9 +36,6 @@ jobs:
         run: |
           git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/hachemn/innodeploy-gitops.git
 
-          cd innodeploy-gitops
-
-          git remote set-url origin https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/hachemn/innodeploy-gitops.git
       - name: Update Helm Values
         run: |
           cd innodeploy-gitops
@@ -47,10 +44,12 @@ jobs:
       - name: Commit and Push Changes
         run: |
           cd innodeploy-gitops
+
           git config user.email "github-actions@github.com"
           git config user.name "github-actions"
 
           git add .
+
           git commit -m "Update image to $TAG" || echo "No changes"
 
-          git push
+          git push https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/hachemn/innodeploy-gitops.git main
