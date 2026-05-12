@@ -1,0 +1,53 @@
+name: InnoDeploy CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout App Repo
+        uses: actions/checkout@v4
+
+      - name: Generate Image Tag
+        id: tag
+        run: echo "TAG=v$(date +%s)" >> $GITHUB_ENV
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker Image
+        run: |
+          docker build -t nourhenhachem/innodeploy-app:$TAG .
+
+      - name: Push Docker Image
+        run: |
+          docker push nourhenhachem/innodeploy-app:$TAG
+
+      - name: Clone GitOps Repo
+        run: |
+          git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/hachemn/innodeploy-gitops.git
+
+      - name: Update Helm Values
+        run: |
+          cd innodeploy-gitops
+          sed -i "s/tag:.*/tag: $TAG/" helm/innodeploy-chart/values-dev.yaml
+
+      - name: Commit and Push Changes
+        run: |
+          cd innodeploy-gitops
+          git config user.email "github-actions@github.com"
+          git config user.name "github-actions"
+
+          git add .
+          git commit -m "Update image to $TAG" || echo "No changes"
+
+          git push
