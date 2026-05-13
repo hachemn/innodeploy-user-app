@@ -23,7 +23,7 @@ const server = http.createServer(async (req, res) => {
   httpRequestsTotal.inc();
 
   //res.end("Innodeploy Version v1.0.9");
-  res.send("Hello from Canary Rollout 🚀");
+  res.writeHead(200); res.end("Hello from Innodeploy 🚀");
 });
 
 server.listen(3000, () => {
